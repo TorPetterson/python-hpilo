@@ -212,7 +212,12 @@ class Ilo(object):
             if sys.version_info < (2,7,9):
                 raise EnvironmentError("SSL verification only works with python 2.7.9 or newer")
             if not self.ssl_context:
-                self.ssl_context = ssl.create_default_context()
+                CIPHERS = (
+                    'ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+HIGH:'
+                    'DH+HIGH:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+HIGH:RSA+3DES:!aNULL:'
+                    '!eNULL:!MD5'
+                    )
+                self.ssl_context = ssl.create_default_context(ciphers=CIPHERS, cert_reqs=CERT_NONE)
                 # Sadly, ancient iLO's aren't dead yet, so let's enable sslv3 by default
                 self.ssl_context.options &= ~ssl.OP_NO_SSLv3
 
